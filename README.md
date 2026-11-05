@@ -13,4 +13,6 @@
 
 ## 公開前のメモ
 
-- 現在は意見をもらう段階のため `<meta name="robots" content="noindex">` を入れています。正式公開時に削除し、sitemap.xml とアナリティクスを追加してください。
+- 現在は意見をもらう段階のため `<meta name="robots" content="noindex">` を入れています。検索に出すときに削除してください。
+- Google アナリティクスは labfond 共通の ID（G-GK0SS0BLJ9）のみ設定しています。サイト専用の ID を作ったら追加してください。
+- ページを増やしたら sitemap.xml にも追加してください。
