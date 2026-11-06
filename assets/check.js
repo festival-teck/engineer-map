@@ -514,15 +514,20 @@ function renderAsk(){
   const q=askIn.value.trim();
   let list,msg="";
   askCtx=null;
-  if(q){const qt=findTech(q.normalize("NFKC"));if(qt.length)askCtx=pickCtx(qt);list=searchAsk(q);if(!list.length)msg=`<p class="ck-flag info">近い質問例が見つかりませんでした。言葉を変えるか、上のボタンから近いものを選んでください。</p>`;}
+  if(q){const qt=findTech(q.normalize("NFKC"));if(qt.length)askCtx=pickCtx(qt);list=searchAsk(q);if(!list.length)msg=`<p class="ck-flag info">近い質問例が見つかりませんでした。言葉を変えるか、下の一覧から近いものを選んでください。</p>`;}
   else list=askSel.map(id=>AK.find(e=>e.id===id)).filter(Boolean);
-  askChips.querySelectorAll("button").forEach(b=>b.setAttribute("aria-pressed",!q&&askSel.includes(b.dataset.id)));
   askOut.innerHTML=msg+list.map(askCard).join("");
 }
 if(askChips){
-  const cats=window.ASK_CATS||[...new Set(AK.map(e=>e.cat||"その他"))];
-  askChips.innerHTML=cats.map(c=>{const es=AK.filter(e=>(e.cat||"その他")===c);return es.length?`<div class="chip-g"><span class="chip-h">${esc(c)}</span><div class="chip-row">${es.map(e=>`<button type="button" data-id="${e.id}" aria-pressed="false">${esc(e.label)}</button>`).join("")}</div></div>`:"";}).join("");
-  askChips.addEventListener("click",e=>{const b=e.target.closest("button");if(!b)return;askIn.value="";askSel=[b.dataset.id];renderAsk();if(window.innerWidth<760)askOut.scrollIntoView({behavior:"smooth",block:"start"});});
+  const cats=(window.ASK_CATS||[...new Set(AK.map(e=>e.cat||"その他"))]).filter(c=>AK.some(e=>(e.cat||"その他")===c));
+  const selCat=$("askCat"),selItem=$("askItem");
+  selCat.innerHTML=cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join("");
+  const fillItems=()=>{selItem.innerHTML=AK.filter(e=>(e.cat||"その他")===selCat.value).map(e=>`<option value="${e.id}">${esc(e.label)}</option>`).join("");};
+  const show=()=>{askIn.value="";askSel=[selItem.value];renderAsk();
+    const r=askOut.getBoundingClientRect();if(r.top<0||r.top>window.innerHeight*.6)askOut.scrollIntoView({behavior:"smooth",block:"start"});};
+  fillItems();
+  selCat.addEventListener("change",()=>{fillItems();show();});
+  selItem.addEventListener("change",show);
   let at;askIn.addEventListener("input",()=>{clearTimeout(at);at=setTimeout(renderAsk,150);});
   askOut.addEventListener("click",e=>{const b=e.target.closest("[data-copy]");if(b)copyText(b.dataset.copy,b,"コピー");});
 }

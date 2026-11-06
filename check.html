@@ -60,9 +60,12 @@
   <div class="wrap stack">
     <p class="eyebrow">それでも気になることがあれば</p>
     <h2>気になることから、<wbr>聞き方の例を<wbr>探す</h2>
-    <p class="lead">気になっていることを入力するか、ボタンから選んでください。用意した質問例の中から近いものを表示します。入力した文章は外部に送られません。</p>
-    <label class="ask-in" for="askQ"><span>気になること</span><input type="search" id="askQ" placeholder="例：規模感が知りたい" autocomplete="off"></label>
-    <div class="ask-chips" id="askChips"></div>
+    <p class="lead">気になっていることを入力するか、分類と項目を選んでください。用意した質問例の中から近いものを表示します。入力した文章は外部に送られません。</p>
+    <label class="ask-in" for="askQ"><span>キーワードで探す</span><input type="search" id="askQ" placeholder="例：規模感が知りたい" autocomplete="off"></label>
+    <div class="ask-sel" id="askChips">
+      <label for="askCat"><span>分類</span><select id="askCat"></select></label>
+      <label for="askItem"><span>気になること</span><select id="askItem"></select></label>
+    </div>
     <div class="ask-out" id="askOut" aria-live="polite"></div>
   </div>
 </section>

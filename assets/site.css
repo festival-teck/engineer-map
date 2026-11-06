@@ -282,3 +282,9 @@ details.tech summary b{font-size:.95rem}
 .chip-h{font-size:.76rem;font-weight:700;color:var(--muted);letter-spacing:.04em}
 .chip-row{display:flex;flex-wrap:wrap;gap:8px}
 .ask-cat{font-size:.74rem;font-weight:700;color:var(--muted)}
+.mini-cta{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;font-size:.9rem;color:var(--muted)}
+.mini-cta .btn{text-decoration:none;font-size:.84rem;padding:5px 14px}
+.ask-sel{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:12px}
+.ask-sel label{display:flex;flex-direction:column;gap:6px;font-size:.86rem;font-weight:700;color:var(--muted);min-width:0}
+.ask-sel select{font:inherit;font-size:1rem;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);width:100%;cursor:pointer}
+@media (max-width:560px){.ask-sel{grid-template-columns:1fr}}
