@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>募集要項チェック | エンジニア職種マップ</title>
+<meta name="description" content="募集要項を貼り付けると、近い職種、案件の規模や立ち位置の手がかり、技術の近さ、企業とエンジニアに確認したい質問をまとめて表示します。入力内容はブラウザの中だけで処理されます。">
+<meta name="robots" content="noindex">
+<link rel="icon" href="/favicon.ico" sizes="any">
+<link rel="icon" href="/icon-192.png" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="canonical" href="https://engineer-map.labfond.com/check.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="エンジニア職種マップ">
+<meta property="og:title" content="募集要項チェック | エンジニア職種マップ">
+<meta property="og:description" content="募集要項を貼り付けると、近い職種、案件の規模や立ち位置の手がかり、技術の近さ、企業とエンジニアに確認したい質問をまとめて表示します。入力内容はブラウザの中だけで処理されます。">
+<meta property="og:url" content="https://engineer-map.labfond.com/check.html">
+<meta property="og:locale" content="ja_JP">
+<meta name="twitter:card" content="summary">
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-GK0SS0BLJ9"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-GK0SS0BLJ9');
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=BIZ+UDPGothic:wght@400;700&family=Dela+Gothic+One&family=IBM+Plex+Mono:wght@500&display=swap">
+<link rel="stylesheet" href="assets/site.css">
+</head>
+<body>
+<nav class="topnav wrap"><a href="./">← エンジニア職種マップ</a></nav>
+<header class="wrap hero stack">
+  <p class="eyebrow">募集要項チェック</p>
+  <h1>募集要項から、<wbr><em>確認したいこと</em>を<wbr>洗い出す</h1>
+  <p class="lead">募集要項や案件票の文章を貼り付けるか、ファイルを読み込んでください。近い職種、案件の規模や立ち位置の手がかり、技術の近さをまとめ、企業とエンジニアのそれぞれに確認したい質問を表示します。最初はサンプルの募集要項が入っています。</p>
+  <p class="privacy">入力した文章はこのブラウザの中だけで処理されます。どこにも送信されず、保存もされません。（<a href="https://labfond.com/articles/browser-tools-privacy.html" target="_blank" rel="noopener">仕組みと確かめ方</a>）</p>
+</header>
+<main>
+<section id="tool" class="tool-sec">
+  <div class="wrap stack">
+    <div class="ck">
+      <div class="ck-in">
+        <div class="ck-bar">
+          <label class="btn" for="ckFile">ファイルを読み込む</label>
+          <input type="file" id="ckFile" accept=".txt,.md,.csv,.pdf,.docx,text/plain,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document" hidden>
+          <button class="btn" type="button" id="ckSample">サンプルを入れる</button>
+          <button class="btn ghost" type="button" id="ckClear">クリア</button>
+        </div>
+        <p class="ck-note" id="ckStatus">対応ファイル：テキスト（.txt）、PDF、Word（.docx）。画像やスキャンしたPDFの文字は読み取れません。</p>
+        <textarea id="ckText" spellcheck="false" placeholder="ここに募集要項を貼り付けてください（ファイルをドラッグ＆ドロップすることもできます）"></textarea>
+      </div>
+      <div class="ck-out" id="ckOut" aria-live="polite"></div>
+    </div>
+  </div>
+</section>
+<section id="ask">
+  <div class="wrap stack">
+    <p class="eyebrow">それでも気になることがあれば</p>
+    <h2>気になることから、<wbr>聞き方の例を<wbr>探す</h2>
+    <p class="lead">気になっていることを入力するか、ボタンから選んでください。用意した質問例の中から近いものを表示します。入力した文章は外部に送られません。</p>
+    <label class="ask-in" for="askQ"><span>気になること</span><input type="search" id="askQ" placeholder="例：規模感が知りたい" autocomplete="off"></label>
+    <div class="ask-chips" id="askChips"></div>
+    <div class="ask-out" id="askOut" aria-live="polite"></div>
+  </div>
+</section>
+<section id="evidence">
+  <div class="wrap stack">
+    <div class="ck-hl-wrap" id="ckHlWrap">
+      <div class="ck-hl-head"><h3>判定に使った箇所</h3>
+        <div class="ck-legend"><span><mark class="m-on">色つき</mark>判定に使用</span><span><mark class="m-half">点線</mark>歓迎・経験不問など（重みを半分に）</span><span><mark class="m-neg">取り消し線</mark>対象外（判定に使わない）</span></div>
+      </div>
+      <div class="ck-hl" id="ckHl"></div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer><div class="wrap stack" style="gap:8px">
+  <p>職種の定義は会社・現場によって異なります。迷ったら「どの工程から参画するか」「コードを書くか」の2点を確認するのが近道です。</p>
+  <p class="foot-links">運営：FD（<a href="https://labfond.com/" target="_blank" rel="noopener">labfond.com</a>）<span aria-hidden="true">・</span><a href="https://labfond.com/about.html" target="_blank" rel="noopener">運営者情報</a><span aria-hidden="true">・</span><a href="https://labfond.com/privacy.html" target="_blank" rel="noopener">プライバシーポリシー</a><span aria-hidden="true">・</span><a href="https://docs.google.com/forms/d/1ul9e318yHhixHOjYTOZlA2eYhhNiN5sS4JxnIKr2HPA/viewform" target="_blank" rel="noopener">お問い合わせ</a></p>
+</div></footer>
+
+<script src="data/tech.js"></script>
+<script src="data/ask.js"></script>
+<script src="assets/check.js"></script>
+</body>
+</html>
