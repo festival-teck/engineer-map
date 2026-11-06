@@ -288,3 +288,7 @@ details.tech summary b{font-size:.95rem}
 .ask-sel label{display:flex;flex-direction:column;gap:6px;font-size:.86rem;font-weight:700;color:var(--muted);min-width:0}
 .ask-sel select{font:inherit;font-size:1rem;padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--surface);color:var(--ink);width:100%;cursor:pointer}
 @media (max-width:560px){.ask-sel{grid-template-columns:1fr}}
+.req-box{display:flex;flex-direction:column;align-items:flex-start;gap:8px;border:1px dashed var(--accent);border-radius:12px;padding:14px 16px;background:var(--surface)}
+.req-box.sub{border-style:solid;border-color:var(--line);background:transparent}
+.req-box p{font-size:.92rem}
+.req-box .btn[disabled]{opacity:.6;cursor:default}

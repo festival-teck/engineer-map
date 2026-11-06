@@ -60,23 +60,13 @@
   <div class="wrap stack">
     <p class="eyebrow">それでも気になることがあれば</p>
     <h2>気になることから、<wbr>聞き方の例を<wbr>探す</h2>
-    <p class="lead">気になっていることを入力するか、分類と項目を選んでください。用意した質問例の中から近いものを表示します。入力した文章は外部に送られません。</p>
+    <p class="lead">気になっていることを入力するか、分類と項目を選んでください。用意した質問例の中から近いものを表示します。キーワードは、質問例の追加を依頼したときだけ送信されます。</p>
     <label class="ask-in" for="askQ"><span>キーワードで探す</span><input type="search" id="askQ" placeholder="例：規模感が知りたい" autocomplete="off"></label>
     <div class="ask-sel" id="askChips">
       <label for="askCat"><span>分類</span><select id="askCat"></select></label>
       <label for="askItem"><span>気になること</span><select id="askItem"></select></label>
     </div>
     <div class="ask-out" id="askOut" aria-live="polite"></div>
-  </div>
-</section>
-<section id="evidence">
-  <div class="wrap stack">
-    <div class="ck-hl-wrap" id="ckHlWrap">
-      <div class="ck-hl-head"><h3>判定に使った箇所</h3>
-        <div class="ck-legend"><span><mark class="m-on">色つき</mark>判定に使用</span><span><mark class="m-half">点線</mark>歓迎・経験不問など（重みを半分に）</span><span><mark class="m-neg">取り消し線</mark>対象外（判定に使わない）</span></div>
-      </div>
-      <div class="ck-hl" id="ckHl"></div>
-    </div>
   </div>
 </section>
 </main>
@@ -88,6 +78,10 @@
 
 <script src="data/tech.js"></script>
 <script src="data/ask.js"></script>
+<script>
+  // 質問例の追加依頼の受付先（Google Apps Script のウェブアプリURL）。空のときは「受付準備中」と表示します。
+  window.EM_REQUEST_ENDPOINT = "";
+</script>
 <script src="assets/check.js"></script>
 </body>
 </html>

@@ -339,16 +339,15 @@ function engQs(a,pos,techs,top,max){
 
 // ===== 表示 =====
 const $=id=>document.getElementById(id);
-const ta=$("ckText"),out=$("ckOut"),hl=$("ckHl"),st=$("ckStatus");
+const ta=$("ckText"),out=$("ckOut"),st=$("ckStatus");
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 const TAG={part:"ほかも担当",neg:"対象外",exp:"経験不問",want:"歓迎",future:"将来"};
 let isSample=false,lastCo=[],lastEn=[],curTab="co";
 function qList(qs,withAns){return `<ol class="qs">${qs.map(([q,s])=>`<li><span class="qq">${esc(q)}</span><small class="why">${esc(s)}</small>${withAns&&ANS[q]?`<ul class="ans">${ANS[q].map(([a,m])=>`<li><b>${esc(a)}</b><span>⇒ ${esc(m)}</span></li>`).join("")}</ul>`:""}</li>`).join("")}</ol>`;}
 function render(){
   const raw=ta.value;
-  if(!raw.trim()){out.innerHTML=`<div class="ck-card"><h3>結果がここに出ます</h3><p style="color:var(--muted);font-size:.9rem">左の欄に募集要項を貼り付けるか、ファイルを読み込んでください。「サンプルを入れる」で動きを確認できます。</p></div>`;hl.innerHTML="";$("ckHlWrap").hidden=true;lastCo=[];lastEn=[];TECHCTX={tech:"◯◯",near:"△△"};renderAsk();return;}
+  if(!raw.trim()){out.innerHTML=`<div class="ck-card"><h3>結果がここに出ます</h3><p style="color:var(--muted);font-size:.9rem">左の欄に募集要項を貼り付けるか、ファイルを読み込んでください。「サンプルを入れる」で動きを確認できます。</p></div>`;lastCo=[];lastEn=[];TECHCTX={tech:"◯◯",near:"△△"};renderAsk();return;}
   const a=analyze(raw),g=gaps(a),pos=position(a.text),techs=findTech(a.text);
-  $("ckHlWrap").hidden=false;
   const top=a.ranked.slice(0,3), max=top[0]?.s||1;
   let h="";
   // 案件の位置づけ
@@ -399,13 +398,6 @@ function render(){
   <div class="tabpane" id="pane-en" ${curTab==="en"?"":"hidden"}><p class="ck-small">これまでの経歴を聞くときの質問です。</p>${qList(en,false)}</div>
   <div class="ck-bar"><button class="btn ck-copy" type="button" id="ckCopy">表示中の質問をコピー</button><a class="btn ghost" href="#ask">ほかに気になることを探す</a></div></div>`;
   out.innerHTML=h;
-  // ハイライト
-  let o="",p=0;
-  a.M.forEach(m=>{o+=esc(a.text.slice(p,m.s));
-    const rk=Object.keys(m.w).sort((x,y)=>m.w[y]-m.w[x])[0];
-    const cls=m.mod==="neg"?"m-neg":(m.mod||m.sec.w<1)?"m-half":"m-on";
-    o+=`<mark class="${cls}" style="--mc:var(${R[rk].c})" title="${esc(R[rk].n)}">${esc(a.text.slice(m.s,m.e))}</mark>`;p=m.e;});
-  o+=esc(a.text.slice(p));hl.innerHTML=o;
   renderAsk();
 }
 function copyText(txt,b,label){
@@ -502,6 +494,20 @@ let askCtx=null;
 const ctx=()=>askCtx||TECHCTX;
 const fill=s=>s.replace(/\{tech\}/g,ctx().tech).replace(/\{near\}/g,ctx().near);
 let askSel=["scale"];
+let syncSel=()=>{};
+// ===== 質問例の追加依頼（依頼ボタンを押したときだけ、キーワードを送信） =====
+const REQ_API=window.EM_REQUEST_ENDPOINT||"";
+const reqMem=[];
+function reqList(){let l=[];try{l=JSON.parse(localStorage.getItem("em-requested")||"[]");}catch(_){}return l.concat(reqMem);}
+const wasReq=q=>reqList().includes(nz(q));
+function rememberReq(q){reqMem.push(nz(q));try{localStorage.setItem("em-requested",JSON.stringify(reqList().slice(-200)));}catch(_){}}
+function reqBox(q,found){
+  const done=wasReq(q);
+  const head=found?`探している質問例と違う場合は、「${esc(q)}」の質問例の追加を依頼できます。`:`<b>「${esc(q)}」に合う質問例はまだありません。</b>この質問例の追加を依頼しますか？`;
+  return `<div class="req-box${found?" sub":""}"><p>${head}</p>
+  ${REQ_API?`<button type="button" class="btn${found?" ghost":""}" data-req="${esc(q)}" ${done?"disabled":""}>${done?"依頼済みです":"この質問例の追加を依頼する"}</button>`:`<button type="button" class="btn ghost" disabled>依頼の受付は準備中です</button>`}
+  <p class="ck-small">送られるのは入力したキーワードだけです。貼り付けた募集要項は送られません。</p></div>`;
+}
 function askCard(e){
   const li=(arr,who)=>arr.map(x=>{const t=fill(x);return `<li><span>${esc(t)}</span><button type="button" class="btn ghost mini" data-copy="${esc(t)}">コピー</button></li>`;}).join("");
   return `<article class="ask-card"><p class="ask-cat">${esc(e.cat||"")}</p><h3>${esc(e.label)}</h3><p class="ask-why">${esc(e.why)}</p>
@@ -514,9 +520,12 @@ function renderAsk(){
   const q=askIn.value.trim();
   let list,msg="";
   askCtx=null;
-  if(q){const qt=findTech(q.normalize("NFKC"));if(qt.length)askCtx=pickCtx(qt);list=searchAsk(q);if(!list.length)msg=`<p class="ck-flag info">近い質問例が見つかりませんでした。言葉を変えるか、下の一覧から近いものを選んでください。</p>`;}
+  let tail="";
+  if(q){const qt=findTech(q.normalize("NFKC"));if(qt.length)askCtx=pickCtx(qt);list=searchAsk(q);
+    if(list.length){syncSel(list[0]);tail=reqBox(q,true);}
+    else msg=reqBox(q,false)+`<p class="ck-small">今すぐ確認したい場合は、言葉を変えるか、分類から近いものを選んでください。</p>`;}
   else list=askSel.map(id=>AK.find(e=>e.id===id)).filter(Boolean);
-  askOut.innerHTML=msg+list.map(askCard).join("");
+  askOut.innerHTML=msg+list.map(askCard).join("")+tail;
 }
 if(askChips){
   const cats=(window.ASK_CATS||[...new Set(AK.map(e=>e.cat||"その他"))]).filter(c=>AK.some(e=>(e.cat||"その他")===c));
@@ -526,10 +535,18 @@ if(askChips){
   const show=()=>{askIn.value="";askSel=[selItem.value];renderAsk();
     const r=askOut.getBoundingClientRect();if(r.top<0||r.top>window.innerHeight*.6)askOut.scrollIntoView({behavior:"smooth",block:"start"});};
   fillItems();
+  syncSel=e=>{if(selCat.value!==(e.cat||"その他")){selCat.value=e.cat||"その他";fillItems();}selItem.value=e.id;};
   selCat.addEventListener("change",()=>{fillItems();show();});
   selItem.addEventListener("change",show);
   let at;askIn.addEventListener("input",()=>{clearTimeout(at);at=setTimeout(renderAsk,150);});
-  askOut.addEventListener("click",e=>{const b=e.target.closest("[data-copy]");if(b)copyText(b.dataset.copy,b,"コピー");});
+  askOut.addEventListener("click",e=>{
+    const b=e.target.closest("[data-copy]");if(b){copyText(b.dataset.copy,b,"コピー");return;}
+    const r=e.target.closest("[data-req]");if(!r||r.disabled)return;
+    const q=r.dataset.req.slice(0,200);r.disabled=true;r.textContent="送信しています…";
+    fetch(REQ_API,{method:"POST",mode:"no-cors",body:new URLSearchParams({q,page:"check"})})
+      .then(()=>{rememberReq(q);r.textContent="依頼しました";const n=document.createElement("p");n.className="ck-small";n.textContent="ありがとうございます。追加されたら、ここで探せるようになります。";r.after(n);})
+      .catch(()=>{r.disabled=false;r.textContent="送信できませんでした。もう一度押してください";});
+  });
 }
 
 ta.value=SAMPLE;isSample=true;render();
