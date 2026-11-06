@@ -277,3 +277,8 @@ details.tech summary b{font-size:.95rem}
 .ask-list li{display:flex;gap:10px;align-items:flex-start;justify-content:space-between;background:var(--soft);border-radius:8px;padding:8px 10px;font-size:.9rem}
 .ask-list li span{min-width:0}
 .btn.mini{font-size:.74rem;padding:2px 8px;flex:none}
+.ask-chips{flex-direction:column;gap:10px}
+.chip-g{display:flex;flex-direction:column;gap:6px}
+.chip-h{font-size:.76rem;font-weight:700;color:var(--muted);letter-spacing:.04em}
+.chip-row{display:flex;flex-wrap:wrap;gap:8px}
+.ask-cat{font-size:.74rem;font-weight:700;color:var(--muted)}
